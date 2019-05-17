@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link href="https://fonts.googleapis.com/css?family=Noto+Sans+KR" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="/static/css/initil.css">
+    <link rel="stylesheet" type="text/css" href="/static/css/animated.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <img class="header__icon" src="/static/image/maskBlack.png">
+
+        <span class="header__about">
+            ABOUT
+        </span>
+    </div>
+    <div class="content">
+    	<div class="shredder animate_object">
+			<img src="/static/image/shredder.png" style="width: 100%; height: 100%;">
+		</div>
+
+		<div class="back animate_object">
+			<p class="back_paper_text"></p>
+			<div class="paper">
+
+			</div>
+			<div class="paper" style="left: 4.2vh;">
+
+			</div>
+			<div class="paper" style="left: 8.4vh;">
+
+			</div>
+			<div class="paper" style="left: 12.6vh;">
+
+			</div>
+			<div class="paper" style="left: 16.8vh;">
+
+			</div>
+			<div class="paper" style="left: 21.0vh;">
+
+			</div>
+			<div class="paper" style="left: 25.2vh;">
+
+			</div>
+			<div class="paper" style="left: 29.4vh;">
+
+			</div>
+			<div class="paper" style="left: 33.6vh;">
+
+			</div>
+		</div>
+
+		<div class="top_paper animate_object">
+			<p class="top_paper_text"></p>
+		</div>
+
+        <div class="result__box">
+            <p class="box__text"></p>
+        </div>
+
+        <a href="./resultCar.html">
+            <img class="animate_object" id="car" src="/static/image/car.png">
+        </a>
+
+        <img class="animate_object" id="collision_icon" src="/static/image/collision_icon.png">
+    </div>
+
+    <a href="./resultFire.html">
+        <img class="animate_object" id="fire" src="/static/image/fire_animation.gif">
+    </a>
+
+    <a href="./resultTrashcan.html">
+        <img class="animate_object" id="trashcan" src="/static/image/trashcan_empty.png">
+    </a>
+
+    <img class="animate_object" id="stamp" src="/static/image/stamp.png">
+
+    <img class="animate_object" id="hammer" src="/static/image/hammer.png">
+
+    <img class="animate_object" id="paint_pot" src="/static/image/paint_pot.png">
+
+    <img class="animate_object" id="eraseImage" src="/static/image/erase.png">
+   
+    <canvas id="erase" width="auto" height="auto"></canvas>
+</div>
+<script>
+	function getAllUrlParams(url) {
+
+		// get query string from url (optional) or window
+		var queryString = url ? url.split('?')[1] : window.location.search.slice(1);
+
+		// we'll store the parameters here
+		var obj = {};
+
+		// if query string exists
+		if (queryString) {
+
+			// stuff after # is not part of query string, so get rid of it
+			queryString = queryString.split('#')[0];
+
+			// split our query string into its component parts
+			var arr = queryString.split('&');
+
+			for (var i = 0; i < arr.length; i++) {
+				// separate the keys and the values
+				var a = arr[i].split('=');
+
+				// set parameter name and value (use 'true' if empty)
+				var paramName = a[0];
+				var paramValue = typeof (a[1]) === 'undefined' ? true : a[1];
+
+				// (optional) keep case consistent
+				paramName = paramName.toLowerCase();
+				if (typeof paramValue === 'string') paramValue = paramValue.toLowerCase();
+
+				// if the paramName ends with square brackets, e.g. colors[] or colors[2]
+				if (paramName.match(/\[(\d+)?\]$/)) {
+
+					// create key if it doesn't exist
+					var key = paramName.replace(/\[(\d+)?\]/, '');
+					if (!obj[key]) obj[key] = [];
+
+					// if it's an indexed array e.g. colors[2]
+					if (paramName.match(/\[\d+\]$/)) {
+						// get the index value and add the entry at the appropriate position
+						var index = /\[(\d+)\]/.exec(paramName)[1];
+						obj[key][index] = paramValue;
+					} else {
+						// otherwise add the value to the end of the array
+						obj[key].push(paramValue);
+					}
+				} else {
+					// we're dealing with a string
+					if (!obj[paramName]) {
+						// if it doesn't exist, create property
+						obj[paramName] = paramValue;
+					} else if (obj[paramName] && typeof obj[paramName] === 'string'){
+						// if property does exist and it's a string, convert it to an array
+						obj[paramName] = [obj[paramName]];
+						obj[paramName].push(paramValue);
+					} else {
+						// otherwise add the property
+						obj[paramName].push(paramValue);
+					}
+				}
+			}
+		}
+
+		return obj;
+	}
+
+	var url = document.URL;
+	var params = getAllUrlParams(url);
+	var selectValue = params.type;
+
+	function mappingPage() {
+		url = document.URL;
+		params = getAllUrlParams(url);
+		document.getElementsByClassName("box__text")[0].innerHTML = params.text;
+		document.getElementsByClassName("top_paper_text")[0].innerHTML = params.text;
+		document.getElementsByClassName("back_paper_text")[0].innerHTML = params.text;
+
+		if(selectValue == 'fire'){
+			$(".animate_object").css({
+				'display' : 'none'
+			});
+			$("#fire").css({
+				'display' : 'block'
+			});
+		}
+
+		else if(selectValue == 'trashcan'){
+			$(".animate_object").css({
+				'display' : 'none'
+			});
+			$("#trashcan").css({
+				'display' : 'block'
+			});
+
+			setTimeout(function(){
+				$("#trashcan").attr('src', '/static/image/trashcan_full.png');
+			}, 3200);
+		}
+
+		else if(selectValue == 'car'){
+			$(".animate_object").css({
+				'display' : 'none'
+			});
+			$("#car").css({
+				'display' : 'block'
+			});
+
+			setTimeout(function(){
+				$("#car").css({
+			    	'display' : 'block'
+			    })
+			    .animate({
+			    	'left' : '5%'
+			    }, 1000)
+			    .delay(200)
+			    .animate({
+			    	'left' : '45%'
+			    },300);
+			},200)
+		}
+
+		else if(selectValue == 'shredder'){
+			$(".animate_object").css({
+				'display' : 'none'
+			});
+			$(".result__box").css({
+				'display' : 'none'
+			});
+			$(".shredder, .back, .top_paper, .paper").css({
+				'display' : 'block'
+			});
+		}
+
+		else if(selectValue == 'stamp'){
+			$(".animate_object").css({
+				'display' : 'none'
+			});
+			$("#stamp").css({
+				'display' : 'block'
+			});
+		}
+
+		else if(selectValue == 'hammer'){
+			$(".animate_object").css({
+				'display' : 'none'
+			});
+			$("#hammer").css({
+				'display' : 'block'
+			});
+		}
+
+		else if(selectValue == 'paint_pot'){
+			$(".animate_object").css({
+				'display' : 'none'
+			});
+			$("#paint_pot").css({
+				'display' : 'block'
+			});
+		}
+
+		else if(selectValue == 'erase'){
+			// $(".animate_object").css({
+			// 	'display' : 'none'
+			// });
+			// $("#erase").css({
+			// 	'display' : 'block'
+			// });
+			$('.box__text').css({
+				// 'display' : 'none'
+				'color' : 'white'
+			});
+		}
+    }
+
+
+    //canvas text cutting
+	function wrapText (context, text, x, y, maxWidth, lineHeight) {
+	    
+	    var words = text.split(' '),
+	        line = '',
+	        lineCount = 0,
+	        i,
+	        test,
+	        metrics;
+
+	    for (i = 0; i < words.length; i++) {
+	        test = words[i];
+	        metrics = context.measureText(test);
+	        while (metrics.width > maxWidth) {
+	            test = test.substring(0, test.length - 1);
+	            metrics = context.measureText(test);
+	        }
+	        if (words[i] != test) {
+	            words.splice(i + 1, 0,  words[i].substr(test.length))
+	            words[i] = test;
+	        }  
+
+	        test = line + words[i] + ' ';  
+	        metrics = context.measureText(test);
+	        
+	        if (metrics.width > maxWidth && i > 0) {
+	            context.fillText(line, x, y);
+	            line = words[i] + ' ';
+	            y += lineHeight;
+	            lineCount++;
+	        }
+	        else {
+	            line = test;
+	        }
+	    }
+	            
+	    context.fillText(line, x, y);
+	}
+
+
+	mappingPage();
+
+	$(document).ready(function () {
+		var url = document.URL;
+		var params = getAllUrlParams(url);
+		document.getElementsByClassName("box__text")[0].innerHTML = params.text;
+		var selectValue = params.type;
+		document.getElementsByClassName("top_paper_text")[0].innerHTML = params.text;
+		document.getElementsByClassName("back_paper_text")[0].innerHTML = params.text;
+
+		if(selectValue == 'car'){
+			setTimeout(function(){
+				$(".result__box").toggleClass('open_car');
+			},1500);
+			// setTimeout(function(){
+			// 	$("#collision_icon")
+			// 	.css({
+			// 		'display' : 'block',
+			// 		'width' : '250px',
+			// 		'height' : '250px',
+			// 		'z-index' : '9999'
+			// 	});
+			// 	setTimeout(function(){
+			// 		$("#collision_icon").css({
+			// 			'display' : 'none'
+			// 		});
+			// 	},150);
+			// },200);
+		}
+		else if(selectValue == 'trashcan' || selectValue == 'fire'){
+			$(".result__box").css({
+				'transform' : 'scale(0.2, 0.2)'
+			});
+			setTimeout(function(){
+				$(".result__box").toggleClass('open');
+			},1000);
+		}
+		else if(selectValue == 'stamp' || selectValue == 'hammer' || selectValue == 'paint_pot'){
+			// Height of hammer picture
+			const HEIGHT = $("#" + selectValue).height();
+
+			// Make the hammer follow the cursor
+			$(document).mousemove(function(event){
+			  $("#" + selectValue).css("left", event.pageX + 10);
+			  $("#" + selectValue).css("top", event.pageY - HEIGHT / 2);
+			});
+
+			// Make the hammering motion
+			$(document).on("mousedown", function(){
+			  $("#" + selectValue).css("transform", "rotate(-20deg)")
+			});
+
+			$(document).on("mouseup", function(){
+			  $("#" + selectValue).css("transform", "rotate(20deg)")
+			});
+		}
+		else if(selectValue == 'erase'){
+			var can = $('#erase')[0],
+	        ctx = can.getContext('2d'),  
+	        img = new Image(),
+	        mouse = {x: -100, y: -100};
+
+			const HEIGHT = $("#eraseImage").height();
+
+	        $(document).mousemove(function(event){
+			  $("#eraseImage").css("left", event.pageX + 10);
+			  $("#eraseImage").css("top", event.pageY - HEIGHT / 2);
+			});
+
+	  		/** 이미지일 경우*/
+	        // img.src = 'https://taegon.kim/wp-content/uploads/2018/05/image-5.png';
+	  
+	        // ctx.drawImage(img, 0, 0, 960, 400);
+	        // img.onload = function(){ 
+	  
+	     	ctx.font = "bold 30px sans-serif";
+	  		wrapText(ctx, params.text, 0, 50, 290, 30);
+			
+	        // track mouse
+	        $('#erase').on('mousemove', function (evt) {    
+	            mouse.x = evt.offsetX;
+	            mouse.y = evt.offsetY;
+	        });
+	    
+	        setInterval(update, 50);
+	        function update() {
+	            var x = mouse.x,
+	                y = mouse.y,
+	                r = 100,
+	                grad = ctx.createRadialGradient(x, y, 0, x, y, r);
+	    
+	            grad.addColorStop(0, "rgba(0, 0, 0, 255)");
+	            grad.addColorStop(1, "rgba(0, 0, 0, 0)");
+	          
+	            ctx.globalCompositeOperation = 'destination-out';
+	            ctx.fillStyle = grad;
+	            ctx.arc(x, y, r, 0, 2 * Math.PI, true);
+	            ctx.fill();
+	        }
+	     // }
+		}
+	});
+
+	$(document).ready(function (e) {
+	    $('.result__box').click(function (e) {
+	        var posX = $(this).offset().left,
+	            posY = $(this).offset().top;
+	        console.log((e.pageX - posX) + ' , ' + (e.pageY - posY));
+
+	        let crack_image_url;
+	        let cursor_width;
+	        let cursor_height;
+
+			if(selectValue == 'stamp'){
+				cursor_width = 200;
+				cursor_height = 200;
+
+				crack_image_url = [
+					'/static/image/stamp_1.png',
+					'/static/image/stamp_2.png',
+					'/static/image/stamp_3.png',
+					'/static/image/stamp_4.png',
+					'/static/image/stamp_5.png'
+				];
+			}
+			else if(selectValue == 'hammer'){
+				cursor_width = 200;
+				cursor_height = 200;
+
+				crack_image_url = [
+					'/static/image/crack_1.png',
+					'/static/image/crack_2.png',
+					'/static/image/crack_3.png',
+					'/static/image/crack_4.png',
+					'/static/image/crack_5.png'
+				];
+			}
+			else if(selectValue == 'paint_pot'){
+				cursor_width = 300;
+				cursor_height = 300;
+
+				crack_image_url = [
+					'/static/image/paint_1.png',
+					'/static/image/paint_2.png',
+					'/static/image/paint_3.png',
+					'/static/image/paint_4.png'
+				];
+			}
+
+			let idx = Math.floor((Math.random() * crack_image_url.length));
+			let rotate_deg = Math.floor((Math.random() * 120) - 60);
+			console.log(rotate_deg);
+
+			$("<div/>")
+				.css({
+					width : String(cursor_width) + 'px',
+					height : String(cursor_height) + 'px',
+					position : 'absolute',
+					left : String((e.pageX - posX) - cursor_width/2) + 'px',
+					top : String((e.pageY - posY) - cursor_height/2) + 'px',
+					background : 'url(' + crack_image_url[idx] +')',
+					'background-size' : 'cover',
+					transform : 'rotate('+ String(rotate_deg) +'deg)',
+				})
+				//.addClass("hammer_effet")
+				.appendTo($('.result__box'));
+	    });
+	});
+</script>
+</body>
+</html>

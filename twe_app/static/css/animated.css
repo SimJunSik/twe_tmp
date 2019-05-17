@@ -1,0 +1,332 @@
+.container {
+    width: 100%;
+    min-height: 100%;
+    background: #f6f6f6;
+}
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    height: 107px;
+    font-size: 20px;
+    color: #000;
+}
+
+.header__about{
+    margin-right: 55px;
+}
+.header__icon{
+    margin-left: 42px;
+}
+.content{
+    display: flex;
+    justify-content: center;
+    color: #fff;
+}
+.result__box{
+    margin-top: 10%;
+    margin-bottom: 10%;
+    padding: 67px;
+    width: 33%;
+    min-height: 3;
+    background-color: #ffffff;
+    box-shadow: 8px 8px 31px 10px  rgba(0,0,0,0.03);
+    border-radius: 20px;
+    text-align: center;
+    word-break: break-all;
+    color: #000000;
+    font-size: 28px;
+    font-weight: bold;
+    position: absolute;
+    transition: transform 1s;
+}
+
+.result__box.open {
+    /*transition: transform 1s;
+    transform: translateX(67%) translateY(150%) rotate(360deg) scale(0, 0);*/
+    animation: throw 2.5s linear;
+    -webkit-animation-fill-mode: forwards;
+}
+
+.result__box.open_car {
+    transition: transform 0.7s;
+    transform: translateX(67%) translateY(-150%) rotate(360deg) scale(0, 0);
+}
+
+@keyframes throw {
+    3%{
+      transform: translateX(-15%) translateY(15%) rotate(-10deg) scale(0.2, 0.2);
+    }
+    5%{
+      transform: translateX(-25%) translateY(25%) rotate(-20deg) scale(0.2, 0.2);
+    }
+    10% {
+      transform: translateX(-30%) translateY(30%) rotate(-30deg) scale(0.2, 0.2);
+    }
+    35%{
+      transform: translateX(-30%) translateY(30%) rotate(-30deg) scale(0.2, 0.2);
+    }
+    50%{
+      transform: translateX(-30%) translateY(30%) rotate(-30deg) scale(0.2, 0.2);
+    }
+
+    55%{
+      transform: translateX(0%) translateY(0%) rotate(-30deg) scale(0.2, 0.2);
+    }
+
+    57.5%{
+      transform: translateX(10%) translateY(2%) rotate(-40deg) scale(0.2, 0.2);
+    }
+
+    60%{
+      transform: translateX(20%) translateY(5%) rotate(-40deg) scale(0.2, 0.2);
+    }
+    62.5%{
+      transform: translateX(25%) translateY(10%) rotate(-60deg) scale(0.2, 0.2);
+    }
+    65%{
+      transform: translateX(30%) translateY(15%) rotate(-90deg) scale(0.2, 0.2);
+    }
+    67.5%{
+      transform: translateX(33%) translateY(22%) rotate(-150deg) scale(0.2, 0.2);
+    }
+
+    70%{
+      transform: translateX(40%) translateY(30%) rotate(-200deg) scale(0.2, 0.2);
+    }
+    72.5%{
+      transform: translateX(45%) translateY(40%) rotate(-250deg) scale(0.2, 0.2);
+    }
+    75%{
+      transform: translateX(50%) translateY(60%) rotate(-300deg) scale(0.2, 0.2);
+    }
+/*    77.5%{
+      transform: translateX(42%) translateY(55%) rotate(170deg) scale(0.2, 0.2);
+    }*/
+
+    80%{
+      transform: translateX(55%) translateY(80%) rotate(-360deg) scale(0.2, 0.2);
+    }
+/*    82.5%{
+      transform: translateX(53%) translateY(66%) rotate(190deg) scale(0.2, 0.2);
+    }*/
+    85%{
+      transform: translateX(60%) translateY(90%) rotate(-400deg) scale(0.2, 0.2);
+    }
+    87.5%{
+      transform: translateX(65%) translateY(100%) rotate(-450deg) scale(0.2, 0.2);
+    }
+
+    90%{
+      transform: translateX(65%) translateY(100%) rotate(-500deg) scale(0.0, 0.0);
+    }
+    92.5%{
+      transform: translateX(68%) translateY(100%) rotate(-550deg) scale(0.0, 0.0);
+    }
+    95%{
+      transform: translateX(71%) translateY(100%) rotate(-600deg) scale(0.0, 0.0);
+    }
+    97.5%{
+      transform: translateX(73%) translateY(100%) rotate(-650deg) scale(0.0, 0.0);
+    }
+
+    100%{
+      transform: translateX(75%) translateY(100%) rotate(-720deg) scale(0.0, 0.0);
+    }
+}
+
+#box__text {
+    width: 400px;
+    height: 400px;
+    background: white;
+    border-radius: 2px;
+    cursor: pointer;
+    transition: transform 0.5s;
+    font-size: 2rem;
+    word-wrap: break-word;
+}
+
+#box__image{
+  width: 400px;
+  height: 400px;
+}
+
+#car{
+    width: 300px;
+    height: 600px;
+    z-index: 9999;
+    position: absolute;
+    top: 22%;
+    left: -15%;
+    display: none;
+    transform: rotate(270deg) translate(0%,-50%);
+}
+
+#collision_icon{
+    width: 200px;
+    height: 200px;
+    position: absolute;
+    top: 25%;
+    left: 30%;
+    display: none;
+}
+
+/* shredder css */
+.back{
+/*    top : 50%;
+    left: 50%;
+    transform: translateX(-50%);*/
+    width: 35vh;
+    height: 25%;
+    background-color: white;
+    position: absolute;
+    animation: from_shredder 15s linear;
+    -webkit-animation-fill-mode: forwards;
+    color : black;
+    display: none;
+    overflow: hidden;
+/*    background: url('https://t1.daumcdn.net/cfile/tistory/277839485652E6DD21');
+    background-size: cover;*/
+}
+.paper{
+    width: 2.33vh;
+    height: 100%;
+    background-color: #f6f6f6;
+    float: left;
+    top : 0;
+    position: absolute;
+    display: none;
+}
+
+@keyframes from_shredder {
+    from {
+      top : 36%;
+    }
+    to {
+      top : 65%;
+    }
+}
+
+@keyframes to_shredder {
+    10%, 20%, 30% {
+      top : 20%;
+    }
+    40%{
+      top : 25%;
+    }
+    100%{
+      top : 38%;
+    }
+}
+
+.top_paper{
+    top : 20%;
+    width: 35vh;
+    height: 25%;
+    background-color: white;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    animation: to_shredder 6s linear;
+    -webkit-animation-fill-mode: forwards;
+    color : black;
+    display: none;
+    overflow: hidden;
+/*    background: url('https://t1.daumcdn.net/cfile/tistory/277839485652E6DD21');
+    background-size: cover;*/
+}
+
+.shredder{
+    top : 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 9999;
+    width: 30%;
+    height: 40%;
+    background-color: transparent;
+    border-radius: 0px 0px 2px 2px;
+    position: absolute;
+    -webkit-animation: shake 0.1s infinite linear;
+    -webkit-animation-delay: 1.5s;
+    display: none;
+}
+
+@keyframes shake {
+  from {
+    left : 49.9%;
+  }
+  to {
+    left : 50.1%;
+  }
+}
+
+.shredder_wrapper{
+    width: auto;
+    height: auto;
+    position: relative;
+    margin-left: 50px;
+}
+
+.back_paper_text, .top_paper_text{
+    word-wrap: break-word;
+    text-overflow: clip;
+}
+
+/* stamp css */
+#stamp {
+  position: absolute;
+  width: auto;
+  height: 150px;
+  display: none;
+}
+
+/* hammer css */
+#hammer {
+  position: absolute;
+  width: auto;
+  height: 150px;
+  display: none;
+}
+
+/* paint-pot css */
+#paint_pot {
+  position: absolute;
+  width: auto;
+  height: 150px;
+  display: none;
+}
+
+/* fire and trashcan css */
+#fire{
+    position: absolute; 
+    right: 10%; 
+    bottom: 5%; 
+    width: 500px; 
+    height: 300px;
+    display: none;
+}
+#trashcan{
+    position: absolute; 
+    right: 10%; 
+    bottom: 0%; 
+    width: 500px; 
+    height: 410px;
+    display: none;
+}
+
+/* erase css */
+#erase {
+  width:auto;
+  height:auto;
+  position:absolute;
+  top: 40%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+#eraseImage {
+  width:auto;
+  height:100px;
+  position:absolute;
+}
