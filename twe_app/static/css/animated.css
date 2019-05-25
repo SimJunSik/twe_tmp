@@ -67,6 +67,7 @@
   bottom: 10%;
   left: 50%;
   transform: translateX(-50%);
+  display: none;
 }
 
 @keyframes throw {
