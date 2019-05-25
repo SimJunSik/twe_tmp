@@ -11,15 +11,17 @@
 <body>
 <div class="container">
     <div class="header">
-        <img class="header__icon" src="/static/image/maskBlack.png">
+    	<a href="/main/">
+	        <img class="header__icon" src="/static/image/maskBlack.png">
+	    </a>
 
-        <span class="header__about">
+        <!-- <span class="header__about">
             ABOUT
-        </span>
+        </span> -->
     </div>
     <div class="content">
     	<div class="shredder animate_object">
-			<img src="/static/image/shredder.png" style="width: 100%; height: 100%;">
+			<img id="shredder_image" src="/static/image/shredder.png" style="width: 100%; height: 100%;">
 		</div>
 
 		<div class="back animate_object">
@@ -68,6 +70,8 @@
         <img class="animate_object" id="collision_icon" src="/static/image/collision_icon.png">
     </div>
 
+    <button id="finish_button" type="button">이 정도면..</button>
+
     <a href="./resultFire.html">
         <img class="animate_object" id="fire" src="/static/image/fire_animation.gif">
     </a>
@@ -84,7 +88,7 @@
 
     <img class="animate_object" id="eraseImage" src="/static/image/erase.png">
    
-    <canvas id="erase" width="auto" height="auto"></canvas>
+    <canvas id="erase" width="auto" height="auto"/>
 </div>
 <script>
 	function getAllUrlParams(url) {
@@ -114,7 +118,7 @@
 
 				// (optional) keep case consistent
 				paramName = paramName.toLowerCase();
-				if (typeof paramValue === 'string') paramValue = paramValue.toLowerCase();
+				if (typeof paramValue === 'string') paramValue = paramValue;
 
 				// if the paramName ends with square brackets, e.g. colors[] or colors[2]
 				if (paramName.match(/\[(\d+)?\]$/)) {
@@ -159,9 +163,21 @@
 	function mappingPage() {
 		url = document.URL;
 		params = getAllUrlParams(url);
-		document.getElementsByClassName("box__text")[0].innerHTML = params.text;
-		document.getElementsByClassName("top_paper_text")[0].innerHTML = params.text;
-		document.getElementsByClassName("back_paper_text")[0].innerHTML = params.text;
+		console.log(params.text);
+		if(params.text.length >= 1000){
+			console.log("image");
+			$(".result__box").css({
+				'height' : '33%',
+				'background-image' : 'url(' + params.text + ')',
+				'background-size' : 'cover'
+			});
+		}
+		else {
+			console.log("text");
+			document.getElementsByClassName("box__text")[0].innerHTML = params.text;
+			document.getElementsByClassName("top_paper_text")[0].innerHTML = params.text;
+			document.getElementsByClassName("back_paper_text")[0].innerHTML = params.text;
+		}
 
 		if(selectValue == 'fire'){
 			$(".animate_object").css({
@@ -170,19 +186,27 @@
 			$("#fire").css({
 				'display' : 'block'
 			});
+
+			$("#finish_button").hide();
 		}
 
 		else if(selectValue == 'trashcan'){
+			const window_w = $(window).width();
+			// console.log('window width = ', String(window_w/100));
+
 			$(".animate_object").css({
 				'display' : 'none'
 			});
 			$("#trashcan").css({
-				'display' : 'block'
+				'display' : 'block',
+				'right' : String((window_w/100)*0.8) + '%'
 			});
 
 			setTimeout(function(){
 				$("#trashcan").attr('src', '/static/image/trashcan_full.png');
-			}, 3200);
+			}, 3000);
+
+			$("#finish_button").hide();
 		}
 
 		else if(selectValue == 'car'){
@@ -204,7 +228,9 @@
 			    .animate({
 			    	'left' : '45%'
 			    },300);
-			},200)
+			},200);
+
+			$("#finish_button").hide();
 		}
 
 		else if(selectValue == 'shredder'){
@@ -214,9 +240,21 @@
 			$(".result__box").css({
 				'display' : 'none'
 			});
+			$(".back, .top_paper").css({
+				'background-image' : 'url(' + params.text + ')',
+				'background-size' : 'cover'
+			});
 			$(".shredder, .back, .top_paper, .paper").css({
 				'display' : 'block'
 			});
+			$("#finish_button").hide();
+
+			setTimeout(function(){
+				$("#shredder_image").attr('src','/static/image/shredder_complete.png');
+				$(".shredder").css({
+					'-webkit-animation' : 'none'
+				});
+			},15000);
 		}
 
 		else if(selectValue == 'stamp'){
@@ -306,10 +344,20 @@
 	$(document).ready(function () {
 		var url = document.URL;
 		var params = getAllUrlParams(url);
-		document.getElementsByClassName("box__text")[0].innerHTML = params.text;
+		console.log(params.text.length);
+		if(params.text.length >= 1000){
+			console.log("image");
+			$(".result__box").css({
+				'background-image' : 'url(' + params.text + ')'
+			});
+		}
+		else {
+			console.log("text");
+			document.getElementsByClassName("box__text")[0].innerHTML = params.text;
+			document.getElementsByClassName("top_paper_text")[0].innerHTML = params.text;
+			document.getElementsByClassName("back_paper_text")[0].innerHTML = params.text;
+		}
 		var selectValue = params.type;
-		document.getElementsByClassName("top_paper_text")[0].innerHTML = params.text;
-		document.getElementsByClassName("back_paper_text")[0].innerHTML = params.text;
 
 		if(selectValue == 'car'){
 			setTimeout(function(){
@@ -332,10 +380,12 @@
 		}
 		else if(selectValue == 'trashcan' || selectValue == 'fire'){
 			$(".result__box").css({
-				'transform' : 'scale(0.2, 0.2)'
+				'transform' : 'scale(0.1, 0.1)'
 			});
+
 			setTimeout(function(){
 				$(".result__box").toggleClass('open');
+				// $(".result__box").animate({path : new $.path.arc(arc_params)})
 			},1000);
 		}
 		else if(selectValue == 'stamp' || selectValue == 'hammer' || selectValue == 'paint_pot'){
@@ -377,7 +427,7 @@
 	        // img.onload = function(){ 
 	  
 	     	ctx.font = "bold 30px sans-serif";
-	  		wrapText(ctx, params.text, 0, 50, 290, 30);
+	  		wrapText(ctx, params.text, 0, 0, 290, 35);
 			
 	        // track mouse
 	        $('#erase').on('mousemove', function (evt) {    
@@ -403,6 +453,8 @@
 	     // }
 		}
 	});
+
+	let click_count = 0;
 
 	$(document).ready(function (e) {
 	    $('.result__box').click(function (e) {
@@ -467,8 +519,16 @@
 				})
 				//.addClass("hammer_effet")
 				.appendTo($('.result__box'));
+
+			if(click_count >= 15){
+				$("#finish_button").css({
+					'background-color' : '#fe572a'
+				});
+			}
+			click_count += 1;
 	    });
 	});
+
 </script>
 </body>
 </html>

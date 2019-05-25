@@ -5,27 +5,33 @@
     <title>Title</title>
     <link href="https://fonts.googleapis.com/css?family=Noto+Sans+KR" rel="stylesheet">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-    <link rel="stylesheet" type="text/css" href="/static/css//initil.css">
+    <link rel="stylesheet" type="text/css" href="/static/css/initil.css">
     <link rel="stylesheet" type="text/css" href="/static/css/main.css">
 </head>
 <body>
 <div class="container">
     <div class="header">
-        <img class="header__icon" src="/static/image/maskBlack.png">
-        <span class="header__about">
+        <a href="/index/">
+            <img class="header__icon" src="/static/image/maskBlack.png">
+        </a>
+        <!-- <span class="header__about">
             로그아웃
-        </span>
+        </span> -->
+        <div class="box__img">
+            <label for="box__imageInput">
+                <img src="/static/image/image.png" class="box__imgIcon"/>
+            </label>
+            <input class="box__imageInput" id="box__imageInput" type="file" data-image-src=''/>
+        </div>
     </div>
     <div class="content">
         <div class="main__box">
             <div class="box__content">
-                <form class="box__form" method='POST' action='/animated/' name='frm' enctype="multipart/form-data">
-                    {% csrf_token %}
+                <form class="box__form">
                     <div class="box__wrapTextarea">
                         <textarea
                                 class="box__textarea"
                                 placeholder="오늘 제일 화났던 일은&#x0a;무엇이 었나요?"
-                                name="text"
                                 required
                         ></textarea>
                     </div>
@@ -36,15 +42,14 @@
                         <!--<i class="box__icon">x</i>-->
                     <!--</div>-->
                     <div class="box__footer">
-                        <div class="box__img">
+                        <!-- <div class="box__img">
                             <label for="box__imageInput">
                                 <img src="/static/image/image.png" class="box__imgIcon"/>
                             </label>
-                            <input class="box__imageInput" id="box__imageInput" name="image" type="file"/>
-                        </div>
+                            <input class="box__imageInput" id="box__imageInput" type="file"/>
+                        </div> -->
                         <input class="box__button" type="button" value="버리기" onclick="clickTextarea()"/>
                     </div>
-                    <input type="text" id="box__selectValue" name="selectValue" hidden>
                 </form>
             </div>
         </div>
@@ -53,7 +58,7 @@
 <div class="modalWrap">
     <div class="modal">
         <div class="modal__box">
-            <img class="modal__icon" src="/static/image/close.png" />
+            <img class="modal__icon" src="/static/image/close.png" onclick="close_modal();"/>
             <div class="modal__content">
                 <p class="modal__topText">이 감정을</p>
                 <select class="modal__select">
@@ -73,35 +78,40 @@
     </div>
 </div>
 <script>
+    function close_modal(){
+        $(".modalWrap").hide();
+    }
+
     function clickTextarea() {
     	document.getElementsByClassName("modalWrap")[0].style.display = "flex";
 	}
-	function clickModal() {
+
+    function clickModal() {
         var selectValue = document.getElementsByClassName("modal__select")[0].value;
         var text = document.getElementsByClassName("box__textarea")[0].value;
-        console.log(selectValue, text);
+        console.log(selectValue, text)
         window.open("/animated/?text="+text+"&type="+selectValue,"_self");
-        //document.frm.submit();
-	}
+    }
 
-    let image = '';
 
     function clickModal_image(){
         var selectValue = document.getElementsByClassName("modal__select")[0].value;
-        console.log(selectValue, image);
-        //window.open("./animated.html?text="+image+"&type="+selectValue,"_self");
+        const image_src = $("#box__imageInput").data('imageSrc');
+        console.log(selectValue, image_src);
+        window.open("/animated/?text="+image_src+"&type="+selectValue,"_self");
         //document.frm.submit();
     }
     $("#box__imageInput").change(function(){
         var file = this.files[0];
         var reader = new FileReader();
         reader.onloadend = function() {
-            // console.log('RESULT', reader.result);
+            console.log('RESULT', reader.result);
+            console.log(reader.result.length);
             $(".box__image").attr("src", reader.result);
-            image = reader.result;
+            $("#box__imageInput").data('imageSrc', reader.result);
         }
         reader.readAsDataURL(file);
-        // $(".box__button--click").attr("onclick", "clickModal_image()");
+        $(".box__button--click").attr("onclick", "clickModal_image()");
         $(".box__wrapTextarea").hide();
         $(".box__wrapImage").css({
             'display' : 'block'
