@@ -164,11 +164,11 @@
 		url = document.URL;
 		params = getAllUrlParams(url);
 		console.log(params.text);
-		if(params.text.length >= 1000){
+		if(params.text.length == 0){
 			console.log("image");
 			$(".result__box").css({
 				'height' : '33%',
-				'background-image' : 'url(' + params.text + ')',
+				'background-image' : 'url(' + sessionStorage.getItem('image') + ')',
 				'background-size' : 'cover'
 			});
 		}
@@ -186,8 +186,6 @@
 			$("#fire").css({
 				'display' : 'block'
 			});
-
-			$("#finish_button").hide();
 		}
 
 		else if(selectValue == 'trashcan'){
@@ -205,8 +203,6 @@
 			setTimeout(function(){
 				$("#trashcan").attr('src', '/static/image/trashcan_full.png');
 			}, 3000);
-
-			$("#finish_button").hide();
 		}
 
 		else if(selectValue == 'car'){
@@ -229,8 +225,6 @@
 			    	'left' : '45%'
 			    },300);
 			},200);
-
-			$("#finish_button").hide();
 		}
 
 		else if(selectValue == 'shredder'){
@@ -247,7 +241,6 @@
 			$(".shredder, .back, .top_paper, .paper").css({
 				'display' : 'block'
 			});
-			$("#finish_button").hide();
 
 			setTimeout(function(){
 				$("#shredder_image").attr('src','/static/image/shredder_complete.png');
@@ -264,6 +257,10 @@
 			$("#stamp").css({
 				'display' : 'block'
 			});
+
+			$("#finish_button").css({
+				'display' : 'block'
+			});
 		}
 
 		else if(selectValue == 'hammer'){
@@ -273,6 +270,10 @@
 			$("#hammer").css({
 				'display' : 'block'
 			});
+
+			$("#finish_button").css({
+				'display' : 'block'
+			});
 		}
 
 		else if(selectValue == 'paint_pot'){
@@ -280,6 +281,10 @@
 				'display' : 'none'
 			});
 			$("#paint_pot").css({
+				'display' : 'block'
+			});
+
+			$("#finish_button").css({
 				'display' : 'block'
 			});
 		}
@@ -345,10 +350,12 @@
 		var url = document.URL;
 		var params = getAllUrlParams(url);
 		console.log(params.text.length);
-		if(params.text.length >= 1000){
+		if(params.text.length == 0){
 			console.log("image");
 			$(".result__box").css({
-				'background-image' : 'url(' + params.text + ')'
+				'height' : '33%',
+				'background-image' : 'url(' + sessionStorage.getItem('image') + ')',
+				'background-size' : 'cover'
 			});
 		}
 		else {

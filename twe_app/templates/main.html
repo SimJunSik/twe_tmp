@@ -98,15 +98,16 @@
         var selectValue = document.getElementsByClassName("modal__select")[0].value;
         const image_src = $("#box__imageInput").data('imageSrc');
         console.log(selectValue, image_src);
-        window.open("/animated/?text="+image_src+"&type="+selectValue,"_self");
+        window.open("/animated/?text="+""+"&type="+selectValue,"_self");
         //document.frm.submit();
     }
     $("#box__imageInput").change(function(){
         var file = this.files[0];
         var reader = new FileReader();
         reader.onloadend = function() {
-            console.log('RESULT', reader.result);
-            console.log(reader.result.length);
+            // console.log('RESULT', reader.result);
+            sessionStorage.setItem("image",reader.result);
+            console.log("session : ", sessionStorage.getItem("image"));
             $(".box__image").attr("src", reader.result);
             $("#box__imageInput").data('imageSrc', reader.result);
         }
