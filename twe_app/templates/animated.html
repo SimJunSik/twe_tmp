@@ -11,7 +11,7 @@
 <body>
 <div class="container">
     <div class="header">
-    	<a href="/main/">
+    	<a href="./main.html">
 	        <img class="header__icon" src="/static/image/maskBlack.png">
 	    </a>
 
@@ -63,6 +63,8 @@
             <p class="box__text"></p>
         </div>
 
+        <canvas id="erase" width="auto" height="auto"/>
+
         <a href="./resultCar.html">
             <img class="animate_object" id="car" src="/static/image/car.png">
         </a>
@@ -87,10 +89,10 @@
     <img class="animate_object" id="paint_pot" src="/static/image/paint_pot.png">
 
     <img class="animate_object" id="eraseImage" src="/static/image/erase.png">
-   
-    <canvas id="erase" width="auto" height="auto"/>
 </div>
 <script>
+	// document.body.style.cursor = 'none';
+
 	function getAllUrlParams(url) {
 
 		// get query string from url (optional) or window
@@ -186,23 +188,28 @@
 			$("#fire").css({
 				'display' : 'block'
 			});
+
+			$("#finish_button").hide();
 		}
 
 		else if(selectValue == 'trashcan'){
 			const window_w = $(window).width();
-			// console.log('window width = ', String(window_w/100));
-
+			console.log('window width = ', String(window_w/100));
+			console.log(String((window_w/100)*0.9) + '%');
 			$(".animate_object").css({
 				'display' : 'none'
 			});
 			$("#trashcan").css({
 				'display' : 'block',
-				'right' : String((window_w/100)*0.8) + '%'
+				'right' : String((window_w/100)*0.85) + '%',
+				'top' : String((window_w/100)*2.8) + '%',
 			});
 
 			setTimeout(function(){
 				$("#trashcan").attr('src', '/static/image/trashcan_full.gif');
 			}, 3000);
+
+			$("#finish_button").hide();
 		}
 
 		else if(selectValue == 'car'){
@@ -225,6 +232,8 @@
 			    	'left' : '45%'
 			    },300);
 			},200);
+
+			$("#finish_button").hide();
 		}
 
 		else if(selectValue == 'shredder'){
@@ -241,6 +250,7 @@
 			$(".shredder, .back, .top_paper, .paper").css({
 				'display' : 'block'
 			});
+			$("#finish_button").hide();
 
 			setTimeout(function(){
 				$("#shredder_image").attr('src','/static/image/shredder_complete.png');
@@ -257,10 +267,6 @@
 			$("#stamp").css({
 				'display' : 'block'
 			});
-
-			$("#finish_button").css({
-				'display' : 'block'
-			});
 		}
 
 		else if(selectValue == 'hammer'){
@@ -268,10 +274,6 @@
 				'display' : 'none'
 			});
 			$("#hammer").css({
-				'display' : 'block'
-			});
-
-			$("#finish_button").css({
 				'display' : 'block'
 			});
 		}
@@ -283,19 +285,15 @@
 			$("#paint_pot").css({
 				'display' : 'block'
 			});
-
-			$("#finish_button").css({
-				'display' : 'block'
-			});
 		}
 
 		else if(selectValue == 'erase'){
-			// $(".animate_object").css({
-			// 	'display' : 'none'
-			// });
-			// $("#erase").css({
-			// 	'display' : 'block'
-			// });
+			$(".animate_object").css({
+				'display' : 'none'
+			});
+			$("#erase, #eraseImage").css({
+				'display' : 'block'
+			});
 			$('.box__text').css({
 				// 'display' : 'none'
 				'color' : 'white'
@@ -350,6 +348,7 @@
 		var url = document.URL;
 		var params = getAllUrlParams(url);
 		console.log(params.text.length);
+		var is_image = false;
 		if(params.text.length == 0){
 			console.log("image");
 			$(".result__box").css({
@@ -357,6 +356,7 @@
 				'background-image' : 'url(' + sessionStorage.getItem('image') + ')',
 				'background-size' : 'cover'
 			});
+			is_image = true;
 		}
 		else {
 			console.log("text");
@@ -428,14 +428,27 @@
 			});
 
 	  		/** 이미지일 경우*/
-	        // img.src = 'https://taegon.kim/wp-content/uploads/2018/05/image-5.png';
-	  
-	        // ctx.drawImage(img, 0, 0, 960, 400);
-	        // img.onload = function(){ 
-	  
-	     	ctx.font = "bold 30px sans-serif";
-	  		wrapText(ctx, params.text, 0, 0, 290, 35);
-			
+	  		if(is_image){
+	  			$(".result__box").hide();
+	  			$("#erase").css({
+	  				'width' : '30vw',
+	  				'height' : '20vw',
+	  				'border-radius' : '20px'
+	  			});
+	  			const result_width = $("#erase").width();
+	  			const result_height = $("#erase").height();
+	  			console.log(result_width, result_height);
+		        img.src = sessionStorage.getItem('image');
+		        ctx.drawImage(img, 0, 0, result_width/1.9, result_height/2);
+	        	// img.onload = function(){
+
+	        	// }
+	        }
+	  		else{
+		     	ctx.font = "bold 30px sans-serif";
+		     	console.log(params.text);
+		  		wrapText(ctx, params.text, 0, 0, 290, 35);
+			}		
 	        // track mouse
 	        $('#erase').on('mousemove', function (evt) {    
 	            mouse.x = evt.offsetX;
@@ -457,7 +470,6 @@
 	            ctx.arc(x, y, r, 0, 2 * Math.PI, true);
 	            ctx.fill();
 	        }
-	     // }
 		}
 	});
 

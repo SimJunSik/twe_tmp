@@ -11,7 +11,7 @@
 <body>
 <div class="container">
     <div class="header">
-        <a href="/index/">
+        <a href="./index.html">
             <img class="header__icon" src="/static/image/maskBlack.png">
         </a>
         <!-- <span class="header__about">
@@ -19,9 +19,21 @@
         </span> -->
         <div class="box__img">
             <label for="box__imageInput">
-                <img src="/static/image/image.png" class="box__imgIcon"/>
+                <img 
+                    src="/static/image/image.png" 
+                    class="box__imgIcon" 
+                    onmouseover="this.src='/static/image/image_hover.png'"
+                    onmouseout="this.src='/static/image/image.png'"/>
             </label>
             <input class="box__imageInput" id="box__imageInput" type="file" data-image-src=''/>
+        </div>
+        <div class="header__noti">
+            <div class="header__notiText">
+                내 감정을 이미지로 버릴 수도 있어요!
+            </div>
+            <div class="header__notiClose" onclick="close_headerNoti();">
+                X
+            </div>
         </div>
     </div>
     <div class="content">
@@ -48,7 +60,7 @@
                             </label>
                             <input class="box__imageInput" id="box__imageInput" type="file"/>
                         </div> -->
-                        <input class="box__button" type="button" value="버리기" onclick="clickTextarea()"/>
+                        <input class="box__button" type="button" value="버리기" onclick="clickTextarea()" disabled/>
                     </div>
                 </form>
             </div>
@@ -76,21 +88,40 @@
             <button class="box__button--click" onclick="clickModal()">확인</button>
         </div>
     </div>
+    <div class="modal__soundNoti">
+        <div class="modal__soundNotiText">
+            <img class="modal__soundIcon" src="/static/image/sound_icon.png">
+            <span style="vertical-align: top;">사운드를 켜주세요!</span>
+        </div>
+    </div>
 </div>
 <script>
+    function close_headerNoti(){
+        $(".header__noti").fadeOut(200);
+    }
+
     function close_modal(){
         $(".modalWrap").hide();
     }
 
     function clickTextarea() {
-    	document.getElementsByClassName("modalWrap")[0].style.display = "flex";
+        console.log("!!!!");
+    	$(".modalWrap")
+        .css({
+            'display' : 'flex'
+        })
+        .hide()
+        .fadeIn(200);
+
+        $(".modal__soundNoti").removeClass("upAnimation");
+        $(".modal__soundNoti").addClass("upAnimation");
 	}
 
     function clickModal() {
         var selectValue = document.getElementsByClassName("modal__select")[0].value;
         var text = document.getElementsByClassName("box__textarea")[0].value;
         console.log(selectValue, text)
-        window.open("/animated/?text="+text+"&type="+selectValue,"_self");
+        window.open("./animated.html?text="+text+"&type="+selectValue,"_self");
     }
 
 
@@ -98,7 +129,7 @@
         var selectValue = document.getElementsByClassName("modal__select")[0].value;
         const image_src = $("#box__imageInput").data('imageSrc');
         console.log(selectValue, image_src);
-        window.open("/animated/?text="+""+"&type="+selectValue,"_self");
+        window.open("./animated/?text="+""+"&type="+selectValue,"_self");
         //document.frm.submit();
     }
     $("#box__imageInput").change(function(){
@@ -118,10 +149,23 @@
             'display' : 'block'
         });
         $(".box__textarea").removeAttr('required');
+        $(".box__button").removeAttr('disabled');
     });
     $(".modal__select").change(function(){
         console.log(this.value);
         $("#box__selectValue").val(this.value);
+    });
+
+    $('.box__textarea').bind('input propertychange', function() {
+        var textareaValue = $(this).val();
+        console.log(textareaValue);
+
+        if(textareaValue.length != 0){
+            $(".box__button").removeAttr('disabled');
+        }
+        else {
+            $(".box__button").attr('disabled', 'true');
+        }
     });
 </script>
 </body>

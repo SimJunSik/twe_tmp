@@ -25,10 +25,11 @@
   color: #fff;
 }
 .result__box{
-  margin-top: 10%;
+  margin-top: 0%;
   margin-bottom: 10%;
   padding: 67px;
-  width: 33%;
+  width: 30vw;
+  height: 20vw;
   min-height: 3;
   background-color: #ffffff;
   box-shadow: 8px 8px 31px 10px  rgba(0,0,0,0.03);
@@ -40,6 +41,7 @@
   font-weight: bold;
   position: absolute;
   transition: transform 1s;
+  overflow: hidden;
 }
 
 .result__box.open {
@@ -67,7 +69,6 @@
   bottom: 10%;
   left: 50%;
   transform: translateX(-50%);
-  display: none;
 }
 
 @keyframes throw {
@@ -326,10 +327,11 @@ display: none;
 width:auto;
 height:auto;
 position:absolute;
-top: 50%;
+top: 40%;
 left: 50%;
 transform: translate(-50%, -50%);
 display: none;
+background-color: transparent;
 }
 
 #eraseImage {

@@ -23,6 +23,52 @@
     margin-left: 42px;
 }
 
+.header__noti{
+    width: 360px;
+    height: 80px;
+    background-color: blue;
+    position: absolute;
+    top: 10%;
+    right: 2%;
+    color: white;
+    border-radius: 40px 0px 40px 40px;
+    -webkit-animation: down 0.4s linear;
+}
+
+@keyframes down {
+  from {
+    top : 7%;
+    opacity: 0;
+  }
+  to {
+    top : 10%;
+    opacity: 1;
+  }
+}
+
+
+
+.header__notiText{
+    width: 90%;
+    height: auto;
+    text-align: center;
+    float: left;
+    position: relative;
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: transparent;
+    font-size: 18px;
+}
+.header__notiClose{
+    width: 10%;
+    height: auto;
+    float: left;
+    position: relative;
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: transparent;
+}
+
 .content {
     display: flex;
     justify-content: center;
@@ -121,6 +167,9 @@
     top: 37px;
     right: 41px
 }
+.box__imgIcon{
+    
+}
 
 .box__footer {
     position: relative;
@@ -167,7 +216,6 @@
 
 .box__form:invalid .box__button {
     background-color: #a3a3a3;
-
 }
 
 .box__form:valid .box__button {
@@ -176,7 +224,6 @@
 
 .modalWrap {
     display: none;
-    /*display: flex;*/
     position: absolute;
     top: 0;
     bottom: 0;
@@ -229,4 +276,59 @@
     -webkit-appearance: none;
     -moz-appearance: none;
     appearance: none;
+}
+
+.modal__soundNoti{
+    position: absolute;
+    bottom: 5%;
+    right: 2%;
+    background-color: blue;
+    width: 300px;
+    height: 80px;
+    z-index: 9999;
+    border-radius: 40px 40px 0px 40px;
+}
+
+.modal__wrapImg{
+    position: relative;
+    width: 10%;
+    float: left;
+    top: 50%;
+    transform: translateY(-50%);
+    text-align: center;
+    background-color: transparent;
+}
+
+.modal__soundIcon{
+    width: 22px;
+    height: 22px;
+    vertical-align: middle;
+}
+
+.modal__soundNotiText{
+    position: relative;
+    width: 100%;
+    height: auto;
+    top: 50%;
+    transform: translateY(-50%);
+    text-align: center;
+    color: white;
+    background-color: transparent;
+    float: left;
+    font-size: 22px;
+}
+
+.upAnimation{
+    -webkit-animation: up 0.4s linear;
+}
+
+@keyframes up {
+  from {
+    bottom : 2%;
+    opacity: 0;
+  }
+  to {
+    bottom : 5%;
+    opacity: 1;
+  }
 }
