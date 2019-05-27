@@ -325,8 +325,8 @@ display: none;
 
 /* erase css */
 #erase {
-width: 500px;
-height: 400px;
+/* width: 500px;
+height: 400px; */
 position: absolute;
 top: 40%;
 left: 50%;
