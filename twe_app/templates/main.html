@@ -11,7 +11,7 @@
 <body>
 <div class="container">
     <div class="header">
-        <a href="./index.html">
+        <a href="/index/">
             <img class="header__icon" src="/static/image/maskBlack.png">
         </a>
         <!-- <span class="header__about">
@@ -21,7 +21,8 @@
             <label for="box__imageInput">
                 <img 
                     src="/static/image/image.png" 
-                    class="box__imgIcon" 
+                    class="box__imgIcon"
+                    style="width: 31px; height: 31px;" 
                     onmouseover="this.src='/static/image/image_hover.png'"
                     onmouseout="this.src='/static/image/image.png'"/>
             </label>
@@ -31,9 +32,7 @@
             <div class="header__notiText">
                 내 감정을 이미지로 버릴 수도 있어요!
             </div>
-            <div class="header__notiClose" onclick="close_headerNoti();">
-                X
-            </div>
+            <img src="/static/image/close_noti.png" class="header__notiClose" onclick="close_headerNoti();" />
         </div>
     </div>
     <div class="content">
@@ -121,7 +120,7 @@
         var selectValue = document.getElementsByClassName("modal__select")[0].value;
         var text = document.getElementsByClassName("box__textarea")[0].value;
         console.log(selectValue, text)
-        window.open("./animated/?text="+text+"&type="+selectValue,"_self");
+        window.open("/animated/?text="+text+"&type="+selectValue,"_self");
     }
 
 
@@ -129,7 +128,7 @@
         var selectValue = document.getElementsByClassName("modal__select")[0].value;
         const image_src = $("#box__imageInput").data('imageSrc');
         console.log(selectValue, image_src);
-        window.open("./animated/?text="+""+"&type="+selectValue,"_self");
+        window.open("/animated/?text="+""+"&type="+selectValue,"_self");
         //document.frm.submit();
     }
     $("#box__imageInput").change(function(){

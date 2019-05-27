@@ -8,3 +8,7 @@ def main(request) :
 def animated(request) :
 
     return render(request, './animated.html')
+
+def result(request) :
+
+    return render(request, './result.html')

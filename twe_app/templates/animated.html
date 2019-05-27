@@ -7,11 +7,12 @@
     <link rel="stylesheet" type="text/css" href="/static/css/initil.css">
     <link rel="stylesheet" type="text/css" href="/static/css/animated.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dat-gui/0.5/dat.gui.min.js"></script>
 </head>
 <body>
 <div class="container">
     <div class="header">
-    	<a href="./main.html">
+    	<a href="/main/">
 	        <img class="header__icon" src="/static/image/maskBlack.png">
 	    </a>
 
@@ -64,23 +65,17 @@
         </div>
 
         <canvas id="erase" width="auto" height="auto"/>
+        <img class="burning_tmp" style="display: none;">
 
-        <a href="./resultCar.html">
-            <img class="animate_object" id="car" src="/static/image/car.png">
-        </a>
-
-        <img class="animate_object" id="collision_icon" src="/static/image/collision_icon.png">
     </div>
+
+    <img class="animate_object" id="car" src="/static/image/car.png">
 
     <button id="finish_button" type="button">이 정도면..</button>
 
-    <a href="./resultFire.html">
-        <img class="animate_object" id="fire" src="/static/image/fire_animation.gif">
-    </a>
+    <img class="animate_object" id="fire" src="/static/image/fire_animation.gif">
 
-    <a href="./resultTrashcan.html">
-        <img class="animate_object" id="trashcan" src="/static/image/trashcan_empty.png">
-    </a>
+    <img class="animate_object" id="trashcan" src="/static/image/trashcan_empty.png">
 
     <img class="animate_object" id="stamp" src="/static/image/stamp.png">
 
@@ -161,6 +156,7 @@
 	var url = document.URL;
 	var params = getAllUrlParams(url);
 	var selectValue = params.type;
+	var mySound;
 
 	function mappingPage() {
 		url = document.URL;
@@ -188,6 +184,10 @@
 			$("#fire").css({
 				'display' : 'block'
 			});
+			$("#erase").css({
+				'display' : 'block'
+			});
+			$(".result__box").hide();
 
 			$("#finish_button").hide();
 		}
@@ -215,9 +215,6 @@
 		else if(selectValue == 'car'){
 			$(".animate_object").css({
 				'display' : 'none'
-			});
-			$("#car").css({
-				'display' : 'block'
 			});
 
 			setTimeout(function(){
@@ -367,25 +364,204 @@
 		var selectValue = params.type;
 
 		if(selectValue == 'car'){
+			mysound = new sound("/static/sound/car_crash_sound_effect.mp3");
+
 			setTimeout(function(){
 				$(".result__box").toggleClass('open_car');
 			},1500);
-			// setTimeout(function(){
-			// 	$("#collision_icon")
-			// 	.css({
-			// 		'display' : 'block',
-			// 		'width' : '250px',
-			// 		'height' : '250px',
-			// 		'z-index' : '9999'
-			// 	});
-			// 	setTimeout(function(){
-			// 		$("#collision_icon").css({
-			// 			'display' : 'none'
-			// 		});
-			// 	},150);
-			// },200);
+			
+			setTimeout(function(){
+				window.location.href = '/result/?type=car';
+			},3000);
 		}
-		else if(selectValue == 'trashcan' || selectValue == 'fire'){
+		else if(selectValue == 'fire'){
+			setTimeout(function(){
+				window.location.href = '/result/?type=fire';
+			},7000);
+
+			(function () {
+			    var requestAnimationFrame = window.requestAnimationFrame || window.mozRequestAnimationFrame || window.webkitRequestAnimationFrame || window.msRequestAnimationFrame;
+			    window.requestAnimationFrame = requestAnimationFrame;
+			})();
+
+
+			if(is_image){
+				var canvas = document.getElementById("erase"),
+			    	ctx = canvas.getContext("2d");
+
+				var mapData = [],
+				    settings = {
+				        Burns: 1,
+				        Color: false
+				    },
+				    img1 = new Image();
+
+				function init() {
+				    for (var x = 0; x <= canvas.width; x++) {
+				        mapData[x] = [];
+				        for (var y = 0; y <= canvas.height; y++) {
+				            mapData[x][y] = {
+				                val: 5 + ~~ (Math.random() * 15),
+				                neighbors: true
+				            };
+				        }
+				    }
+
+				    for (var i = 0; i < settings.Burns; i++) {
+				        mapData[canvas.width/2][canvas.height-1].val = 0;
+				    }
+
+				    burn();
+				}
+
+				function burnEdges(x, y, data) {
+				    var neighbors = false;
+				    for (var xx = x - 1; xx <= x + 1; xx++) {
+				        for (var yy = y - 1; yy <= y + 1; yy++) {
+				            if (!(xx == x && yy == y) && (xx > -1 && xx < canvas.width + 1 && yy > -1 && yy < canvas.height + 1)) {
+				                if (mapData[xx][yy].val > 0) {
+				                    neighbors = true;
+				                    mapData[xx][yy].val -= 2;
+				                    if (settings.Color) {
+				                        var pix = (xx + yy * canvas.width) * 4;
+				                        data[pix] = 250;
+				                        data[pix + 1] = 80;
+				                        data[pix + 2] = 0;
+				                    }
+				                }
+				            }
+				        }
+				    }
+
+				    if (!neighbors) {
+				        mapData[x][y].neighbors = false;
+				    }
+				}
+
+				function burn() {
+				    var imgData = ctx.getImageData(0, 0, canvas.width, canvas.height),
+				        data = imgData.data,
+				        pix = null,
+				        flag = true;
+
+				    for (var x = 0; x <= canvas.width; x++) {
+				        for (var y = 0; y < canvas.height; y++) {
+			        		pix = (x + y * canvas.width) * 4;
+				            if (mapData[x][y].val <= 0) {
+				                if (mapData[x][y].neighbors) {
+				                    burnEdges(x, y, data);
+				                }
+				                data[pix + 3] = 0;
+				            } else {
+				                flag = false;
+				            }
+				        }
+				    }
+				    ctx.putImageData(imgData, 0, 0);
+				    if (!flag) {
+				        requestAnimationFrame(burn);
+				    } else {
+				        // swap();
+				    }
+				}
+
+				img1.onload = function () {
+					const result_width = $("#erase").width();
+	  				const result_height = $("#erase").height();
+				    ctx.drawImage(img1, 0, 0, result_width/1.9, result_height/2);
+				    init();
+				}
+				img1.crossOrigin = "Anonymous";
+				img1.src = sessionStorage.getItem('image');
+			}
+			else {
+				var canvas = document.getElementById("erase"),
+			    	ctx = canvas.getContext("2d");
+
+				ctx.font = "bold 15px sans-serif";
+		     	console.log(params.text);
+		  		wrapText(ctx, params.text, 10, 10, 290, 20);
+
+		  		var mapData = [],
+				    settings = {
+				        Burns: 1,
+				        Color: false
+				    };
+
+				init();
+
+
+				function init() {
+				    for (var x = 0; x <= canvas.width; x++) {
+				        mapData[x] = [];
+				        for (var y = 0; y <= canvas.height; y++) {
+				            mapData[x][y] = {
+				                val: 5 + ~~ (Math.random() * 15),
+				                neighbors: true
+				            };
+				        }
+				    }
+
+				    for (var i = 0; i < settings.Burns; i++) {
+				        mapData[canvas.width/2][canvas.height-1].val = 0;
+				    }
+
+				    burn();
+				}
+
+				function burnEdges(x, y, data) {
+				    var neighbors = false;
+				    for (var xx = x - 1; xx <= x + 1; xx++) {
+				        for (var yy = y - 1; yy <= y + 1; yy++) {
+				            if (!(xx == x && yy == y) && (xx > -1 && xx < canvas.width + 1 && yy > -1 && yy < canvas.height + 1)) {
+				                if (mapData[xx][yy].val > 0) {
+				                    neighbors = true;
+				                    mapData[xx][yy].val -= 2;
+				                    if (settings.Color) {
+				                        var pix = (xx + yy * canvas.width) * 4;
+				                        data[pix] = 250;
+				                        data[pix + 1] = 80;
+				                        data[pix + 2] = 0;
+				                    }
+				                }
+				            }
+				        }
+				    }
+
+				    if (!neighbors) {
+				        mapData[x][y].neighbors = false;
+				    }
+				}
+
+				function burn() {
+				    var imgData = ctx.getImageData(0, 0, canvas.width, canvas.height),
+				        data = imgData.data,
+				        pix = null,
+				        flag = true;
+
+				    for (var x = 0; x <= canvas.width; x++) {
+				        for (var y = 0; y < canvas.height; y++) {
+			        		pix = (x + y * canvas.width) * 4;
+				            if (mapData[x][y].val <= 0) {
+				                if (mapData[x][y].neighbors) {
+				                    burnEdges(x, y, data);
+				                }
+				                data[pix + 3] = 0;
+				            } else {
+				                flag = false;
+				            }
+				        }
+				    }
+				    ctx.putImageData(imgData, 0, 0);
+				    if (!flag) {
+				        requestAnimationFrame(burn);
+				    } else {
+				        // swap();
+				    }
+				}
+			}
+		}
+		else if(selectValue == 'trashcan'){
 			$(".result__box").css({
 				'transform' : 'scale(0.1, 0.1)'
 			});
@@ -394,6 +570,10 @@
 				$(".result__box").toggleClass('open');
 				// $(".result__box").animate({path : new $.path.arc(arc_params)})
 			},1000);
+
+			setTimeout(function(){
+				window.location.href = '/result/?type=' + selectValue;
+			},8000);
 		}
 		else if(selectValue == 'stamp' || selectValue == 'hammer' || selectValue == 'paint_pot'){
 			// Height of hammer picture
@@ -428,6 +608,9 @@
 			});
 
 	  		/** 이미지일 경우*/
+	  		const result_width = $("#erase").width();
+	  		const result_height = $("#erase").height();
+
 	  		if(is_image){
 	  			$(".result__box").hide();
 	  			$("#erase").css({
@@ -435,8 +618,6 @@
 	  				'height' : '20vw',
 	  				'border-radius' : '20px'
 	  			});
-	  			const result_width = $("#erase").width();
-	  			const result_height = $("#erase").height();
 	  			console.log(result_width, result_height);
 		        img.src = sessionStorage.getItem('image');
 		        ctx.drawImage(img, 0, 0, result_width/1.9, result_height/2);
@@ -445,9 +626,9 @@
 	        	// }
 	        }
 	  		else{
-		     	ctx.font = "bold 30px sans-serif";
+		     	ctx.font = "bold 15px sans-serif";
 		     	console.log(params.text);
-		  		wrapText(ctx, params.text, 0, 0, 290, 35);
+		  		wrapText(ctx, params.text, 10, 10, 290, 20);
 			}		
 	        // track mouse
 	        $('#erase').on('mousemove', function (evt) {    
@@ -460,7 +641,7 @@
 	            var x = mouse.x,
 	                y = mouse.y,
 	                r = 100,
-	                grad = ctx.createRadialGradient(x, y, 0, x, y, r);
+	                grad = ctx.createRadialGradient(x, y, 0, x-10, y, r);
 	    
 	            grad.addColorStop(0, "rgba(0, 0, 0, 255)");
 	            grad.addColorStop(1, "rgba(0, 0, 0, 0)");
@@ -470,6 +651,10 @@
 	            ctx.arc(x, y, r, 0, 2 * Math.PI, true);
 	            ctx.fill();
 	        }
+		}
+		else if ( selectValue == 'shredder') {
+			mySound = new sound("/static/sound/paper_shredder_sound_effect.mp3");
+
 		}
 	});
 
@@ -486,6 +671,8 @@
 	        let cursor_height;
 
 			if(selectValue == 'stamp'){
+				mySound = new sound("/static/sound/stamp_sound_effect.mp3");
+
 				cursor_width = 200;
 				cursor_height = 200;
 
@@ -498,6 +685,8 @@
 				];
 			}
 			else if(selectValue == 'hammer'){
+				mySound = new sound("/static/sound/hammer_crash_sound_effect.mp3");
+
 				cursor_width = 200;
 				cursor_height = 200;
 
@@ -510,6 +699,8 @@
 				];
 			}
 			else if(selectValue == 'paint_pot'){
+				mySound = new sound("/static/sound/paint_sound_effect.mp3");
+
 				cursor_width = 300;
 				cursor_height = 300;
 
@@ -547,6 +738,15 @@
 			click_count += 1;
 	    });
 	});
+
+	function sound(src) {
+		this.thisSound = document.createElement("iframe");
+		this.thisSound.src = src;
+		this.thisSound.setAttribute("preload", "auto");
+		this.thisSound.setAttribute("controls", "none");
+		this.thisSound.style.display = "none";
+		document.body.appendChild(this.thisSound);
+	}
 
 </script>
 </body>

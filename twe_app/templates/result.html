@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link href="https://fonts.googleapis.com/css?family=Noto+Sans+KR" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="/static/css/initil.css">
+    <link rel="stylesheet" type="text/css" href="/static/css/result.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <a href="/main/">
+            <img class="header__icon" src="/static/image/maskBlack.png">
+        </a>
+
+        <!-- <span class="header__about">
+            ABOUT
+        </span> -->
+    </div>
+    <div class="content">
+        <div class="result__box">
+            <div class="box__content">
+                <img class="box__icon" src="/static/image/car_icon.png">
+                <p class="box__text--bold"></p>
+                <p class="box__text"></p>
+                <p class="box__text"></p>
+            </div>
+            <button class="box__button--click" onclick="mainClick()">끝내기</button>
+        </div>
+    </div>
+</div>
+<script>
+    function mainClick() {
+        window.open("/","_self");
+	}
+
+    function getAllUrlParams(url) {
+
+        // get query string from url (optional) or window
+        var queryString = url ? url.split('?')[1] : window.location.search.slice(1);
+
+        // we'll store the parameters here
+        var obj = {};
+
+        // if query string exists
+        if (queryString) {
+
+            // stuff after # is not part of query string, so get rid of it
+            queryString = queryString.split('#')[0];
+
+            // split our query string into its component parts
+            var arr = queryString.split('&');
+
+            for (var i = 0; i < arr.length; i++) {
+                // separate the keys and the values
+                var a = arr[i].split('=');
+
+                // set parameter name and value (use 'true' if empty)
+                var paramName = a[0];
+                var paramValue = typeof (a[1]) === 'undefined' ? true : a[1];
+
+                // (optional) keep case consistent
+                paramName = paramName.toLowerCase();
+                if (typeof paramValue === 'string') paramValue = paramValue;
+
+                // if the paramName ends with square brackets, e.g. colors[] or colors[2]
+                if (paramName.match(/\[(\d+)?\]$/)) {
+
+                    // create key if it doesn't exist
+                    var key = paramName.replace(/\[(\d+)?\]/, '');
+                    if (!obj[key]) obj[key] = [];
+
+                    // if it's an indexed array e.g. colors[2]
+                    if (paramName.match(/\[\d+\]$/)) {
+                        // get the index value and add the entry at the appropriate position
+                        var index = /\[(\d+)\]/.exec(paramName)[1];
+                        obj[key][index] = paramValue;
+                    } else {
+                        // otherwise add the value to the end of the array
+                        obj[key].push(paramValue);
+                    }
+                } else {
+                    // we're dealing with a string
+                    if (!obj[paramName]) {
+                        // if it doesn't exist, create property
+                        obj[paramName] = paramValue;
+                    } else if (obj[paramName] && typeof obj[paramName] === 'string'){
+                        // if property does exist and it's a string, convert it to an array
+                        obj[paramName] = [obj[paramName]];
+                        obj[paramName].push(paramValue);
+                    } else {
+                        // otherwise add the property
+                        obj[paramName].push(paramValue);
+                    }
+                }
+            }
+        }
+
+        return obj;
+    }
+
+    $(document).ready(function(){
+        var url = document.URL;
+        var params = getAllUrlParams(url);
+        var selectValue = params.type;
+
+        let img_src = '';
+        let text_bold = '';
+        let text1 = '';
+        let text2 = '';
+
+        if(selectValue == 'fire'){
+            img_src = 'fire.png';
+            text_bold = '화르륵!';
+            text1 = '당신의 감정은 훌륭하게 태워져';
+            text2 = '하늘의 재가 되었습니다!';
+        }
+        else if(selectValue == 'car'){
+            img_src = 'car_icon.png';
+            text_bold = '뿌앙-퍽!';
+            text1 = '당신의 감정은 자동차에 치여';
+            text2 = '저세상으로 떠났습니다!';
+        }
+        else if(selectValue == 'trashcan'){
+            img_src = 'trashcan_full.gif';
+            text_bold = '휙!';
+            text1 = '당신의 감정은 휴지통에 버려져';
+            text2 = '흔적 없이 소각되었습니다!';
+        }
+        else if(selectValue == 'stamp'){
+            img_src = 'stamp.png';
+            text_bold = '꽝꽝!';
+            text1 = '당신의 감정은 빨간 도장 속에';
+            text2 = '파묻혀버렸습니다!';
+        }
+        else if(selectValue == 'shredder'){
+            img_src = 'shredder.png';
+            text_bold = '갈갈갈-';
+            text1 = '당신의 감정은 분쇄기에 잘게';
+            text2 = '갈려 버려졌습니다!';
+        }
+        else if(selectValue == 'hammer'){
+            img_src = 'hammer.png';
+            text_bold = '탕탕탕!';
+            text1 = '당신의 감정은 망치에 맞아';
+            text2 = '잘게 부숴졌습니다.';
+        }
+        else if(selectValue == 'erase'){
+            img_src = 'erase.png';
+            text_bold = '북북!';
+            text1 = '당신의 감정은 지우개로 지워져';
+            text2 = '지우개 똥이 되었습니다!';
+            $(".box__icon").css({
+                'transform' : 'rotate(50deg)'
+            });
+        }
+        else if(selectValue == 'paint_pot'){
+            img_src = 'paint_2.png';
+            text_bold = '뿌지직!';
+            text1 = '당신의 감정은 덕지덕지 페인트칠';
+            text2 = '되어 사라져 버렸습니다!';
+        }
+
+        $(".box__icon").attr('src', '/static/image/' + img_src);
+        $(".box__text--bold").html(text_bold);
+        document.getElementsByClassName('box__text')[0].innerHTML = text1;
+        document.getElementsByClassName('box__text')[1].innerHTML = text2;
+    });
+</script>
+</body>
+</html>
